@@ -93,11 +93,12 @@ public class Estimator
     // remove z_i from the count variable
     int topic = trnModel.getZ()[m].get(n);
     int w = trnModel.getData().getDocs().get(m).getWords()[n];
+    int cf=trnModel.getData().getDocs().get(m).getCfs()[n];
 
-    trnModel.getNw()[w][topic] -= 1;
-    trnModel.getNd()[m][topic] -= 1;
-    trnModel.getNwsum()[topic] -= 1;
-    trnModel.getNdsum()[m] -= 1;
+    trnModel.getNw()[w][topic] -= cf;
+    trnModel.getNd()[m][topic] -= cf;
+    trnModel.getNwsum()[topic] -= cf;
+    trnModel.getNdsum()[m] -= cf;
 
     double Vbeta = trnModel.getV() * trnModel.getBeta();
 
@@ -136,10 +137,10 @@ public class Estimator
     }
 
     // add newly estimated z_i to count variables
-    trnModel.getNw()[w][topic] += 1;
-    trnModel.getNd()[m][topic] += 1;
-    trnModel.getNwsum()[topic] += 1;
-    trnModel.getNdsum()[m] += 1;
+    trnModel.getNw()[w][topic] += cf;
+    trnModel.getNd()[m][topic] += cf;
+    trnModel.getNwsum()[topic] += cf;
+    trnModel.getNdsum()[m] += cf;
 
     return topic;
   }
