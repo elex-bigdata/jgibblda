@@ -474,7 +474,7 @@ public class Model {
           labelsBuilder.append(labels[labels.length - 1]);
         }
         labelsBuilder.append("]" + "\t");
-        System.out.println(labelsBuilder.toString());
+        //System.out.println(labelsBuilder.toString());
         writer.write(labelsBuilder.toString());
         for (j = 0; j < data.getDocs().get(i).getLength(); ++j) {
           writer.write(data.getDocs().get(i).getWords()[j] + ":" + data.getDocs().get(i).getCfs()[j] + ":" + z[i].get(j) + " ");
