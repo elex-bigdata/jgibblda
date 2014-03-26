@@ -25,7 +25,7 @@
  * along with JGibbsLDA; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package jgibblda;
+package com.elex.bigdata.jgibblda;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -624,7 +624,7 @@ public class Model {
       return false;
 
     // read dictionary
-    Dictionary dict = new Dictionary();
+    com.elex.bigdata.jgibblda.Dictionary dict = new com.elex.bigdata.jgibblda.Dictionary();
     if (!dict.readWordMap(dir + File.separator + modelName + wordMapSuffix))
       return false;
 

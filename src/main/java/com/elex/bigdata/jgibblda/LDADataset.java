@@ -25,7 +25,7 @@
  * along with JGibbsLDA; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package jgibblda;
+package com.elex.bigdata.jgibblda;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;

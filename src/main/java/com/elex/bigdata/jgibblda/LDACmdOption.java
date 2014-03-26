@@ -1,4 +1,4 @@
-package jgibblda;
+package com.elex.bigdata.jgibblda;
 
 import org.kohsuke.args4j.*;
 

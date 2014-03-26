@@ -26,9 +26,7 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package jgibblda;
-
-import java.util.Comparator;
+package com.elex.bigdata.jgibblda;
 
 public class Pair implements Comparable<Pair> {
   private Object first;

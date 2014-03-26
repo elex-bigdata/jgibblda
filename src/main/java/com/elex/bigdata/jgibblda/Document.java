@@ -26,15 +26,12 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package jgibblda;
+package com.elex.bigdata.jgibblda;
 
 import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.set.hash.TIntHashSet;
-
-import java.util.List;
-import java.util.Map;
 
 public class Document {
 
