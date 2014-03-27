@@ -714,7 +714,7 @@ public class Model {
               try {
                 label_set.add(Integer.parseInt(labelStr));
               } catch (NumberFormatException nfe) {
-                System.err.println("Unknown document label ( " + labelStr + " ) for document " + i + ".");
+                //System.err.println("Unknown document label ( " + labelStr + " ) for document " + i + ".");
               }
             }
             labels = new TIntArrayList(label_set);
