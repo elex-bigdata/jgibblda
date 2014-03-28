@@ -1,5 +1,7 @@
 package com.elex.bigdata.jgibblda;
 
+import com.elex.bigdata.hashing.BDMD5;
+import com.elex.bigdata.hashing.HashingException;
 import com.elex.bigdata.ro.BasicRedisShardedPoolManager;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.ShardedJedis;
@@ -23,7 +25,7 @@ public class ResultEtl {
   private Map<String, String> uidCategories = new HashMap<String, String>();
   private static Logger logger = Logger.getLogger(ResultEtl.class);
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, HashingException {
     String fileName = "/data/log/user_category/llda/" + args[0];
     logger.info("load result from " + fileName);
     ResultEtl resultEtl = new ResultEtl();
@@ -32,7 +34,7 @@ public class ResultEtl {
     resultEtl.putToRedis();
   }
 
-  private void loadResult(String tthetafile) throws IOException {
+  private void loadResult(String tthetafile) throws IOException, HashingException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(
       new GZIPInputStream(
         new FileInputStream(tthetafile)), "UTF-8"));
@@ -59,8 +61,8 @@ public class ResultEtl {
       if (100 - probabilities.get(0) - probabilities.get(1) < 16)
         probBuilder.append("0");
       probBuilder.append(Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
-
-      uidCategories.put(uid, probBuilder.toString());
+      String uidMd5= BDMD5.getInstance().toMD5(uid);
+      uidCategories.put(uidMd5, probBuilder.toString());
       logger.debug(uid + "\t" + probBuilder.toString());
     }
   }
@@ -78,8 +80,10 @@ public class ResultEtl {
       e.printStackTrace();
       successful = false;
     } finally {
-      if (successful)
+      if (successful){
         manager.returnShardedJedis(shardedJedis);
+        logger.info("put To redis Success");
+      }
       else {
         manager.returnBrokenShardedJedis(shardedJedis);
         logger.info("put To redis failed");
