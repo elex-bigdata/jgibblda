@@ -49,10 +49,10 @@ public class ResultEtl {
         continue;
       Double aProb=Double.parseDouble(labelProbabilities[0].split(":")[1]);
       Double bProb=Double.parseDouble(labelProbabilities[1].split(":")[1]);
-      if(aProb>bProb&&aProb<0.5){
+      if(aProb>bProb&&aProb<0.51){
         probabilities.add((int)(aProb*100)+1);
         probabilities.add((int)(bProb*100));
-      }else if(bProb>aProb&&bProb<0.5){
+      }else if(bProb>aProb&&bProb<0.51){
         probabilities.add((int)(aProb*100));
         probabilities.add((int)(bProb*100)+1);
       }
