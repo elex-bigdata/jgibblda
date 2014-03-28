@@ -24,7 +24,7 @@ public class ResultEtl {
   private static Logger logger=Logger.getLogger(ResultEtl.class);
   public static void main(String[] args) throws IOException {
     String fileName="/data/log/user_category/llda/"+args[0];
-    System.out.println(fileName);
+    logger.info("load result from " +fileName);
     ResultEtl resultEtl=new ResultEtl();
     resultEtl.loadResult(fileName);
     logger.info("load Result completely. "+" users "+resultEtl.uidCategories.size());
@@ -51,6 +51,7 @@ public class ResultEtl {
       probBuilder.append("z" + Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
 
       uidCategories.put(uid, probBuilder.toString());
+      logger.debug(uid+"\t"+probabilities.toString());
     }
   }
 
