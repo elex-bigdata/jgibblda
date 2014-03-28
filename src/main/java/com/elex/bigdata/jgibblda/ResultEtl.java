@@ -51,7 +51,7 @@ public class ResultEtl {
       probBuilder.append("z" + Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
 
       uidCategories.put(uid, probBuilder.toString());
-      logger.debug(uid+"\t"+probabilities.toString());
+      logger.debug(uid+"\t"+probBuilder.toString());
     }
   }
 
