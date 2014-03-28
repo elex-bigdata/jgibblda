@@ -4,5 +4,5 @@ args=$*
 baseDir=`dirname $0`/..
 JAR=$baseDir/target/jgibblda-jar-with-dependencies.jar
 MAIN=com.elex.bigdata.jgibblda.LDA
-echo "java -cp $JAR $MAIN -inf -dir /data/log/user_category/llda -ntopics 20 $args"
-java -cp $JAR $MAIN -inf -dir /data/log/user_category/llda -ntopics 20 $args
+echo "java -cp $JAR $MAIN -inf -dir /data/log/user_category/llda -ntopics 5 -model elex $args"
+java -cp $JAR $MAIN -inf -dir /data/log/user_category/llda -ntopics 5 -model elex $args
