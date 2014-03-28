@@ -1,6 +1,7 @@
 package com.elex.bigdata.jgibblda;
 
 import com.elex.bigdata.ro.BasicRedisShardedPoolManager;
+import org.apache.log4j.Logger;
 import redis.clients.jedis.ShardedJedis;
 
 import java.io.*;
@@ -20,12 +21,13 @@ import java.util.zip.GZIPInputStream;
 public class ResultEtl {
   private BasicRedisShardedPoolManager manager = new BasicRedisShardedPoolManager("jgibblda", "/redis.site.properties");
   private Map<String, String> uidCategories = new HashMap<String, String>();
-
+  private static Logger logger=Logger.getLogger(ResultEtl.class);
   public static void main(String[] args) throws IOException {
     String fileName="/data/log/user_category/llda/"+args[0];
     System.out.println(fileName);
     ResultEtl resultEtl=new ResultEtl();
     resultEtl.loadResult(fileName);
+    logger.info("load Result completely. "+" users "+resultEtl.uidCategories.size());
     resultEtl.putToRedis();
   }
 
@@ -47,6 +49,7 @@ public class ResultEtl {
       probBuilder.append("a" + Integer.toHexString(probabilities.get(0)));
       probBuilder.append("b" + Integer.toHexString(probabilities.get(1)));
       probBuilder.append("z" + Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
+
       uidCategories.put(uid, probBuilder.toString());
     }
   }
@@ -66,8 +69,10 @@ public class ResultEtl {
     } finally {
       if (successful)
         manager.returnShardedJedis(shardedJedis);
-      else
+      else{
         manager.returnBrokenShardedJedis(shardedJedis);
+        logger.info("put To redis failed");
+      }
     }
   }
 }
