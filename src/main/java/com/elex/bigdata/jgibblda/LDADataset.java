@@ -27,14 +27,8 @@
  */
 package com.elex.bigdata.jgibblda;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 import gnu.trove.list.array.TIntArrayList;
@@ -60,6 +54,24 @@ public class LDADataset {
 
   //link to a global dictionary (optional), null for train data, not null for test data
   private Dictionary globalDict = null;
+
+  private Set<String> eliminatedUrls = new HashSet<String>();
+
+  public LDADataset() {
+    InputStream inputStream = this.getClass().getResourceAsStream("/eliminated_urls");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    String line = null;
+    try {
+      while ((line = reader.readLine()) != null) {
+        String[] urls = line.split(" ");
+        for (String url : urls) {
+          eliminatedUrls.add(url);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
   //-------------------------------------------------------------
   //Public Instance Methods
@@ -140,6 +152,8 @@ public class LDADataset {
       }
       try {
         String word = wordCf[0];
+        if(eliminatedUrls.contains(word))
+          continue;
         int cf = Integer.parseInt(wordCf[1]);
         int _id = localDict.getWord2id().size();
 
@@ -166,6 +180,8 @@ public class LDADataset {
         continue;
       }
     }
+    if(ids.size()==0)
+      return;
     Document doc = new Document(ids, cfs, str, labels);
     setDoc(doc, docs.size());
     //put uid and Doc into map
@@ -287,7 +303,7 @@ public class LDADataset {
       mergeDocument(docs.get(i), trainedDoc, est);
     }
     setV(localDict.getWord2id().size());
-    System.out.println("localDict size is "+V);
+    System.out.println("localDict size is " + V);
   }
 
   //used by train -estc or inference
@@ -308,7 +324,7 @@ public class LDADataset {
 
     //merge word:cf
     //put the inferenced word-cf to map
-    Map<Integer,Integer> word_cf_map = new HashMap<Integer,Integer>();
+    Map<Integer, Integer> word_cf_map = new HashMap<Integer, Integer>();
     for (int i = 0; i < currentDoc.getWords().length; i++) {
       word_cf_map.put(currentDoc.getWords()[i], currentDoc.getCfs()[i]);
     }
@@ -349,7 +365,7 @@ public class LDADataset {
       }
       V = localId;
     }
-    for(Map.Entry<Integer,Integer> entry:word_cf_map.entrySet()){
+    for (Map.Entry<Integer, Integer> entry : word_cf_map.entrySet()) {
       mergedWords.add(entry.getKey());
       mergedCfs.add(entry.getValue());
     }
