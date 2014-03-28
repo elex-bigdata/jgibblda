@@ -43,7 +43,7 @@ public class ResultEtl {
       String Thetas = uidThetas[1];
       String[] labelProbabilities = Thetas.split(" ");
       for (String labelProbality : labelProbabilities) {
-        probabilities.add((int) Double.parseDouble(labelProbality.split(":")[1]) * 100);
+        probabilities.add((int) (Double.parseDouble(labelProbality.split(":")[1]) * 100));
       }
       StringBuilder probBuilder = new StringBuilder();
       probBuilder.append("a" + Integer.toHexString(probabilities.get(0)));
