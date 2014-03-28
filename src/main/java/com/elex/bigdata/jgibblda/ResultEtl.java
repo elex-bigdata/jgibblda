@@ -45,8 +45,16 @@ public class ResultEtl {
       String uid = uidThetas[0];
       String Thetas = uidThetas[1];
       String[] labelProbabilities = Thetas.split(" ");
-      for (String labelProbality : labelProbabilities) {
-        probabilities.add((int) (Double.parseDouble(labelProbality.split(":")[1]) * 100));
+      if(labelProbabilities.length<2)
+        continue;
+      Double aProb=Double.parseDouble(labelProbabilities[0].split(":")[1]);
+      Double bProb=Double.parseDouble(labelProbabilities[1].split(":")[1]);
+      if(aProb>bProb&&aProb<0.5){
+        probabilities.add((int)(aProb*100)+1);
+        probabilities.add((int)(bProb*100));
+      }else if(bProb>aProb&&bProb<0.5){
+        probabilities.add((int)(aProb*100));
+        probabilities.add((int)(bProb*100)+1);
       }
       StringBuilder probBuilder = new StringBuilder();
       probBuilder.append("a");
