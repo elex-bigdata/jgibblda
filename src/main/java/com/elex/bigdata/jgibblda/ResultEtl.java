@@ -55,6 +55,9 @@ public class ResultEtl {
       }else if(bProb>aProb&&bProb<0.51){
         probabilities.add((int)(aProb*100));
         probabilities.add((int)(bProb*100)+1);
+      }else {
+        probabilities.add((int)(aProb*100));
+        probabilities.add((int)(bProb*100));
       }
       StringBuilder probBuilder = new StringBuilder();
       probBuilder.append("a");
