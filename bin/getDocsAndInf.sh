@@ -1,4 +1,4 @@
-//get url access log from startTime to endTime and merge them to today's log and then inf them all
+#get url access log from startTime to endTime and merge them to today's log and then inf them all
 startTime=$1
 endTime=$2
 baseDir=`dirname $0`/..
