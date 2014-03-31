@@ -93,7 +93,7 @@ public class Inferencer
 //        newModel.saveModel(outputPrefix + ".");
     System.out.println("\nSaving the inference outputs!");
     double[][] result = newModel.getTheta();
-    newModel.saveModel(newModel.getDfile()+"_"+newModel.getModelName()+"_inf");
+    newModel.saveModel(newModel.getDfile().replace('/','.')+"_inf_");
       /*
     for(int i=0;i<newModel.getM();i++){
       System.out.print(newModel.getData().getUid(i)+"\t");
