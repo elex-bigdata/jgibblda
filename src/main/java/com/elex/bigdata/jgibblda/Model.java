@@ -154,6 +154,9 @@ public class Model {
 
     // read in data
     data.readDataSet(docDir + File.separator + dfile, unlabeled);
+    File modelPath=new File(modelDir);
+    if(!modelPath.exists())
+      modelPath.mkdirs();
   }
 
 
