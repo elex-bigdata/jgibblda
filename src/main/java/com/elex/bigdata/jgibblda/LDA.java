@@ -97,7 +97,7 @@ public class LDA
           }
         }
       }
-
+      service.shutdown();
       service.awaitTermination(3,TimeUnit.HOURS);
 
     } catch (CmdLineException cle){
