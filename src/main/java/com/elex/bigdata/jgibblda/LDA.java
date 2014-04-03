@@ -28,17 +28,28 @@
 
 package com.elex.bigdata.jgibblda;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import com.elex.bigdata.util.MetricMapping;
+import org.apache.log4j.Logger;
 import org.kohsuke.args4j.*;
 
 public class LDA
 {
+  private static Logger logger=Logger.getLogger(LDA.class);
   public static void main(String args[])
   {
     LDACmdOption option = new LDACmdOption();
     CmdLineParser parser = new CmdLineParser(option);
-
+    ExecutorService service=new ThreadPoolExecutor(3,20,3600, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(30));
     try {
       if (args.length == 0){
         showHelp(parser);
@@ -47,14 +58,48 @@ public class LDA
 
       parser.parseArgument(args);
 
-      if (option.est || option.estc){
-        Estimator estimator = new Estimator(option);
-        estimator.estimate();
+      String modelDir,docDir;
+      List<String> projects=new ArrayList<String>();
+      if(option.project.equals("")){
+        //todo
+        //get all projects to add to projects list
+        for(String project : MetricMapping.getInstance().getAllProjectShortNameMapping().keySet())
+          projects.add(project);
+      }else{
+        projects.add(option.project);
       }
-      else if (option.inf){
-        Inferencer inferencer = new Inferencer(option);
-        Model newModel = inferencer.inference();
+      for(String project:projects){
+        Byte projectId= MetricMapping.getInstance().getProjectURLByte(project);
+        if(option.nation.equals("")){
+          Set<String> nations=MetricMapping.getNationsByProjectID(projectId);
+          for(String nation :nations){
+            modelDir=option.modelDir+(option.modelDir.endsWith(File.separator)?"":File.separator)+project+File.separator+nation;
+            docDir=option.docDir+(option.docDir.endsWith(File.separator)?"":File.separator)+project+File.separator+nation;
+            if (option.est || option.estc){
+              Estimator estimator = new Estimator(option,modelDir,docDir);
+              service.execute(estimator);
+            }
+            else if (option.inf){
+              Inferencer inferencer = new Inferencer(option,modelDir,docDir);
+              service.execute(inferencer);
+            }
+          }
+        }else{
+          modelDir=option.modelDir+(option.modelDir.endsWith(File.separator)?"":File.separator)+project+File.separator+option.nation;
+          docDir=option.docDir+(option.docDir.endsWith(File.separator)?"":File.separator)+project+File.separator+option.nation;
+          if (option.est || option.estc){
+            Estimator estimator = new Estimator(option,modelDir,docDir);
+            service.execute(estimator);
+          }
+          else if (option.inf){
+            Inferencer inferencer = new Inferencer(option,modelDir,docDir);
+            service.execute(inferencer);
+          }
+        }
       }
+
+      service.awaitTermination(3,TimeUnit.HOURS);
+
     } catch (CmdLineException cle){
       System.out.println("Command line error: " + cle.getMessage());
       showHelp(parser);

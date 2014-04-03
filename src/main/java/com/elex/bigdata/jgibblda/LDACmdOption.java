@@ -21,6 +21,14 @@ public class LDACmdOption {
 
   @Option(name="-dir", usage="Specify directory")
   public String dir = "";
+  @Option(name="-docDir",usage="Specify doc directory")
+  public String docDir="";
+  @Option(name="-modelDir",usage="Specify model directory")
+  public String modelDir="";
+  @Option(name="-project",usage="Specify project")
+  public String project="";
+  @Option(name="-nation",usage="Specify nation")
+  public String nation="";
 
   @Option(name="-dfile", usage="Specify data file (*.gz)")
   public String dfile = "";

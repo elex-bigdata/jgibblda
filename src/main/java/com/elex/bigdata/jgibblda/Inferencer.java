@@ -28,11 +28,16 @@
 
 package com.elex.bigdata.jgibblda;
 
+import com.elex.bigdata.hashing.HashingException;
+import org.apache.log4j.Logger;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Inferencer
+public class Inferencer implements Runnable
 {
+  private static Logger logger=Logger.getLogger(Inferencer.class);
   // Train model
   private Model trnModel;
   private Dictionary globalDict;
@@ -53,19 +58,32 @@ public class Inferencer
     globalDict = trnModel.getData().getLocalDict();
   }
 
+  public Inferencer(LDACmdOption option,String docDir,String modelDir) throws IOException {
+    this.option = option;
+
+    trnModel = new Model(option);
+    trnModel.setDocDir(docDir);
+    trnModel.setModelDir(modelDir);
+    trnModel.init(false,false);
+
+    globalDict = trnModel.getData().getLocalDict();
+  }
+
   //inference new model ~ getting data from a specified dataset
-  public Model inference() throws FileNotFoundException, IOException
-  {
+  public Model inference() throws FileNotFoundException, IOException, HashingException {
     newModel = new Model(option, trnModel);
+    newModel.setDocDir(trnModel.getDocDir());
+    newModel.setModelDir(trnModel.getModelDir());
     //merge documents in trainedModel which has same uid with newModel
-    newModel.getData().mergeTrainedDocuments(trnModel.getData(),false);
+    newModel.getData().mergeTrainedDocuments(trnModel.getData(), false);
     newModel.init(true,false);
     newModel.initInf();
-    System.out.println("Sampling " + newModel.getNiters() + " iterations for inference!");
-    System.out.print("Iteration");
+    logger.info("inference "+newModel.getModelDir()+" start");
+    logger.info("Sampling " + newModel.getNiters() + " iterations for inference!");
+    logger.info("Iteration");
     int liter=1;
     for (liter = 1; liter <= newModel.getNiters(); liter++){
-      System.out.format("%6d", liter);
+      logger.info(liter);
 
       // for all newz_i
       for (int m = 0; m < newModel.getM(); ++m){
@@ -81,7 +99,7 @@ public class Inferencer
         newModel.updateParams(trnModel);
       }
 
-      System.out.print("\b\b\b\b\b\b");
+      //System.out.print("\b\b\b\b\b\b");
     }// end iterations
     newModel.setLiter(liter-1);
 
@@ -91,9 +109,17 @@ public class Inferencer
 //            outputPrefix = outputPrefix.substring(0, outputPrefix.length() - 3);
 //        }
 //        newModel.saveModel(outputPrefix + ".");
-    System.out.println("\nSaving the inference outputs!");
+    logger.info("\nSaving the inference outputs!");
     double[][] result = newModel.getTheta();
-    newModel.saveModel(newModel.getDfile().replace('/','.')+"_inf_");
+    String modelPrefix=newModel.getDfile().replace('/','.')+"_inf_";
+    String tassignSuffix=".tassign.gz";
+    newModel.saveModel(modelPrefix);
+    String resultFile=newModel.getModelDir()+ File.separator + modelPrefix + newModel.getModelName()+tassignSuffix;
+    logger.info("result Etl start");
+    ResultEtl resultEtl=new ResultEtl();
+    resultEtl.loadResult(resultFile);
+    logger.info("result Etl completed");
+    logger.info("inference "+newModel.getModelDir()+ "completely");
       /*
     for(int i=0;i<newModel.getM();i++){
       System.out.print(newModel.getData().getUid(i)+"\t");
@@ -199,5 +225,16 @@ public class Inferencer
     }
 
     return topic;
+  }
+
+  @Override
+  public void run() {
+    try {
+      inference();
+    } catch (IOException e) {
+      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    } catch (HashingException e) {
+      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    }
   }
 }

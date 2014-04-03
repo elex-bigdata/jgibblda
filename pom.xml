@@ -77,5 +77,11 @@
             <artifactId>hashing</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.elex.bigdata</groupId>
+            <artifactId>metricmapping</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 </project>

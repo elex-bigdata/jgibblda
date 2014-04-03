@@ -34,7 +34,7 @@ public class ResultEtl {
     resultEtl.putToRedis();
   }
 
-  private void loadResult(String tthetafile) throws IOException, HashingException {
+  public void loadResult(String tthetafile) throws IOException, HashingException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(
       new GZIPInputStream(
         new FileInputStream(tthetafile)), "UTF-8"));

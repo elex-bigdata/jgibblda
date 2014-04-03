@@ -63,6 +63,8 @@ public class Model {
 
 
   private String dir = "./";
+  private String modelDir= "./";
+  private String docDir= "./";
   private String dfile = "trndocs.dat";
   private boolean unlabeled = false;
   private String modelName = "model";
@@ -125,6 +127,12 @@ public class Model {
     if (dir.endsWith(File.separator))
       dir = dir.substring(0, dir.length() - 1);
 
+    this.modelDir=option.modelDir;
+    if (modelDir.endsWith(File.separator))
+      modelDir = modelDir.substring(0, modelDir.length() - 1);
+    this.docDir=option.docDir;
+    if (docDir.endsWith(File.separator))
+      docDir = docDir.substring(0, docDir.length() - 1);
     dfile = option.dfile;
     unlabeled = option.unlabeled;
     twords = option.twords;
@@ -145,8 +153,9 @@ public class Model {
     }
 
     // read in data
-    data.readDataSet(dir + File.separator + dfile, unlabeled);
+    data.readDataSet(docDir + File.separator + dfile, unlabeled);
   }
+
 
   //---------------------------------------------------------------
   //	Init Methods
@@ -174,7 +183,7 @@ public class Model {
         currentLoadedData = new LDADataset();
         //set local dictionary as trained dictionary
         currentLoadedData.setLocalDict(data.getLocalDict());
-        currentLoadedData.readDataSet(dir + File.separator + dfile, unlabeled);
+        currentLoadedData.readDataSet(docDir + File.separator + dfile, unlabeled);
       }
 
 
@@ -410,15 +419,15 @@ public class Model {
   }
 
   public boolean saveModel(String modelPrefix) {
-    if (!saveModelTAssign(dir + File.separator + modelPrefix + modelName + tassignSuffix)) {
+    if (!saveModelTAssign(modelDir + File.separator + modelPrefix + modelName + tassignSuffix)) {
       return false;
     }
 
-    if (!saveModelOthers(dir + File.separator + modelPrefix + modelName + othersSuffix)) {
+    if (!saveModelOthers(modelDir + File.separator + modelPrefix + modelName + othersSuffix)) {
       return false;
     }
 
-    if (!saveModelTheta(dir + File.separator + modelPrefix + modelName + thetaSuffix)) {
+    if (!saveModelTheta(modelDir + File.separator + modelPrefix + modelName + thetaSuffix)) {
       return false;
     }
 
@@ -427,12 +436,12 @@ public class Model {
     //}
 
     if (twords > 0) {
-      if (!saveModelTwords(dir + File.separator + modelPrefix + modelName + twordsSuffix)) {
+      if (!saveModelTwords(modelDir + File.separator + modelPrefix + modelName + twordsSuffix)) {
         return false;
       }
     }
 
-    if (!data.getLocalDict().writeWordMap(dir + File.separator + modelPrefix + modelName + wordMapSuffix)) {
+    if (!data.getLocalDict().writeWordMap(modelDir + File.separator + modelPrefix + modelName + wordMapSuffix)) {
       return false;
     }
 
@@ -617,15 +626,15 @@ public class Model {
    * Load saved model
    */
   public boolean loadModel() {
-    if (!readOthersFile(dir + File.separator + modelName + othersSuffix))
+    if (!readOthersFile(modelDir + File.separator + modelName + othersSuffix))
       return false;
 
-    if (!readTAssignFile(dir + File.separator + modelName + tassignSuffix))
+    if (!readTAssignFile(modelDir + File.separator + modelName + tassignSuffix))
       return false;
 
     // read dictionary
     com.elex.bigdata.jgibblda.Dictionary dict = new com.elex.bigdata.jgibblda.Dictionary();
-    if (!dict.readWordMap(dir + File.separator + modelName + wordMapSuffix))
+    if (!dict.readWordMap(modelDir + File.separator + modelName + wordMapSuffix))
       return false;
 
     data.setLocalDict(dict);
@@ -821,6 +830,20 @@ public class Model {
 
   public void setDir(String dir) {
     this.dir = dir;
+  }
+
+  public String getDocDir() {
+    return docDir;
+  }
+  public void setDocDir(String dir){
+    this.docDir=dir;
+  }
+
+  public String getModelDir(){
+    return modelDir;
+  }
+  public void setModelDir(String dir){
+    this.modelDir=dir;
   }
 
   public String getDfile() {

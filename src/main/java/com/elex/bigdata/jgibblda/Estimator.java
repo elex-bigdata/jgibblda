@@ -28,11 +28,14 @@
 
 package com.elex.bigdata.jgibblda;
 
+import org.apache.log4j.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Estimator
+public class Estimator implements Runnable
 {
+  private static Logger logger=Logger.getLogger(Estimator.class);
   // output model
   private Model trnModel;
   private LDACmdOption option;
@@ -51,14 +54,27 @@ public class Estimator
     }
   }
 
+  public Estimator(LDACmdOption option,String modelDir,String docDir) throws IOException {
+    this.option = option;
+
+    trnModel = new Model(option);
+    trnModel.setDocDir(docDir);
+    trnModel.setModelDir(modelDir);
+    if (option.est){
+      trnModel.init(true,true);
+    }
+    else if (option.estc){
+      trnModel.init(false,true);
+    }
+  }
+
   public void estimate()
   {
-    System.out.println("Sampling " + trnModel.getNiters() + " iterations!");
-    System.out.print("Iteration");
+    logger.info("estimate "+trnModel.getModelDir()+" start");
+    logger.info("Sampling " + trnModel.getNiters() + " iterations!");
+    logger.info("Iteration");
     int liter =trnModel.getLiter();
     for (int startIter = ++liter; liter <= startIter - 1 + trnModel.getNiters(); liter++){
-      System.out.format("%6d", liter);
-
       // for all z_i
       for (int m = 0; m < trnModel.getM(); m++){
         for (int n = 0; n < trnModel.getData().getDocs().get(m).getLength(); n++){
@@ -71,15 +87,17 @@ public class Estimator
 
       if ((liter == startIter - 1 + trnModel.getNiters()) ||
         (liter > trnModel.getNburnin() && liter % trnModel.getSamplingLag() == 0)) {
+        logger.info(liter);
         trnModel.updateParams();
       }
 
-      System.out.print("\b\b\b\b\b\b");
+      //System.out.print("\b\b\b\b\b\b");
     }// end iterations
     trnModel.setLiter(liter-1);
 
-    System.out.println("\nSaving the final model!");
+    logger.info("\nSaving the final model!");
     trnModel.saveModel();
+    logger.info("estimate "+trnModel.getModelDir()+ "completely");
   }
 
   /**
@@ -143,5 +161,10 @@ public class Estimator
     trnModel.getNdsum()[m] += cf;
 
     return topic;
+  }
+
+  @Override
+  public void run() {
+    estimate();
   }
 }
