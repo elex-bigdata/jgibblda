@@ -30,7 +30,7 @@ public class LDACmdOption {
   @Option(name="-nation",usage="Specify nation")
   public String nation="";
 
-  @Option(name="-dfile", usage="Specify data file (*.gz)")
+  @Option(name="-dfile", usage="Specify data file (*.gz)",required = true)
   public String dfile = "";
 
   @Option(name="-model", usage="Specify the model name")
