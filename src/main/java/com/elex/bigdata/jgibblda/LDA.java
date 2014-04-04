@@ -42,79 +42,61 @@ import com.elex.bigdata.util.MetricMapping;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.*;
 
-public class LDA
-{
-  private static Logger logger=Logger.getLogger(LDA.class);
-  public static void main(String args[])
-  {
+public class LDA {
+  private static Logger logger = Logger.getLogger(LDA.class);
+
+  public static void main(String args[]) {
     LDACmdOption option = new LDACmdOption();
     CmdLineParser parser = new CmdLineParser(option);
-    ExecutorService service=new ThreadPoolExecutor(3,20,3600, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(30));
+    ExecutorService service = new ThreadPoolExecutor(3, 20, 3600, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(30));
     try {
-      if (args.length == 0){
+      if (args.length == 0) {
         showHelp(parser);
         return;
       }
 
       parser.parseArgument(args);
 
-      String modelDir,docDir;
-      List<String> projects=new ArrayList<String>();
-      if(option.project.equals("")){
+      String modelDir, docDir;
+      List<String> projects = new ArrayList<String>();
+      if (option.project.equals("")) {
         //todo
         //get all projects to add to projects list
-        for(String project : MetricMapping.getInstance().getAllProjectShortNameMapping().keySet())
+        for (String project : MetricMapping.getInstance().getAllProjectShortNameMapping().keySet())
           projects.add(project);
-      }else{
+      } else {
         projects.add(option.project);
       }
-      for(String project:projects){
-        Byte projectId= MetricMapping.getInstance().getProjectURLByte(project);
-        if(option.nation.equals("")){
-          Set<String> nations=MetricMapping.getNationsByProjectID(projectId);
-          for(String nation :nations){
-            modelDir=option.modelDir+(option.modelDir.endsWith(File.separator)?"":File.separator)+project+File.separator+nation;
-            docDir=option.docDir+(option.docDir.endsWith(File.separator)?"":File.separator)+project+File.separator+nation;
-            if (option.est || option.estc){
-              Estimator estimator = new Estimator(option,modelDir,docDir);
-              service.execute(estimator);
-            }
-            else if (option.inf){
-              Inferencer inferencer = new Inferencer(option,modelDir,docDir);
-              service.execute(inferencer);
-            }
-          }
-        }else{
-          modelDir=option.modelDir+(option.modelDir.endsWith(File.separator)?"":File.separator)+project+File.separator+option.nation;
-          docDir=option.docDir+(option.docDir.endsWith(File.separator)?"":File.separator)+project+File.separator+option.nation;
-          if (option.est || option.estc){
-            Estimator estimator = new Estimator(option,modelDir,docDir);
-            service.execute(estimator);
-          }
-          else if (option.inf){
-            Inferencer inferencer = new Inferencer(option,modelDir,docDir);
-            service.execute(inferencer);
-          }
+      for (String project : projects) {
+        modelDir = option.modelDir + (option.modelDir.endsWith(File.separator) ? "" : File.separator) + project;
+        docDir = option.docDir + (option.docDir.endsWith(File.separator) ? "" : File.separator) + project;
+        if (option.est || option.estc) {
+          Estimator estimator = new Estimator(option, docDir, modelDir);
+          service.execute(estimator);
+        } else if (option.inf) {
+          Inferencer inferencer = new Inferencer(option, docDir, modelDir);
+          service.execute(inferencer);
         }
       }
-      service.shutdown();
-      service.awaitTermination(3,TimeUnit.HOURS);
 
-    } catch (CmdLineException cle){
+      service.shutdown();
+      service.awaitTermination(3, TimeUnit.HOURS);
+
+    } catch (CmdLineException cle) {
       System.out.println("Command line error: " + cle.getMessage());
       showHelp(parser);
       return;
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       return;
-    } catch (Exception e){
+    } catch (Exception e) {
       System.out.println("Error in main: " + e.getMessage());
       e.printStackTrace();
       return;
     }
   }
 
-  public static void showHelp(CmdLineParser parser){
+  public static void showHelp(CmdLineParser parser) {
     System.out.println("LDA [options ...] [arguments...]");
     parser.printUsage(System.out);
   }

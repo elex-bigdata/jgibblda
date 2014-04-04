@@ -54,12 +54,10 @@ public class Estimator implements Runnable
     }
   }
 
-  public Estimator(LDACmdOption option,String modelDir,String docDir) throws IOException {
+  public Estimator(LDACmdOption option,String docDir,String modelDir) throws IOException {
     this.option = option;
 
-    trnModel = new Model(option);
-    trnModel.setDocDir(docDir);
-    trnModel.setModelDir(modelDir);
+    trnModel = new Model(option,docDir,modelDir);
     if (option.est){
       trnModel.init(true,true);
     }

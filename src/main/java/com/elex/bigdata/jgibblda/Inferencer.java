@@ -61,9 +61,7 @@ public class Inferencer implements Runnable
   public Inferencer(LDACmdOption option,String docDir,String modelDir) throws IOException {
     this.option = option;
 
-    trnModel = new Model(option);
-    trnModel.setDocDir(docDir);
-    trnModel.setModelDir(modelDir);
+    trnModel = new Model(option,docDir,modelDir);
     trnModel.init(false,false);
 
     globalDict = trnModel.getData().getLocalDict();
@@ -71,9 +69,7 @@ public class Inferencer implements Runnable
 
   //inference new model ~ getting data from a specified dataset
   public Model inference() throws FileNotFoundException, IOException, HashingException {
-    newModel = new Model(option, trnModel);
-    newModel.setDocDir(trnModel.getDocDir());
-    newModel.setModelDir(trnModel.getModelDir());
+    newModel = new Model(option, trnModel.getDocDir(),trnModel.getModelDir(),trnModel);
     //merge documents in trainedModel which has same uid with newModel
     newModel.getData().mergeTrainedDocuments(trnModel.getData(), false);
     newModel.init(true,false);
@@ -110,7 +106,6 @@ public class Inferencer implements Runnable
 //        }
 //        newModel.saveModel(outputPrefix + ".");
     logger.info("\nSaving the inference outputs!");
-    double[][] result = newModel.getTheta();
     String modelPrefix=newModel.getDfile().replace('/','.')+"_inf_";
     String tassignSuffix=".tassign.gz";
     newModel.saveModel(modelPrefix);

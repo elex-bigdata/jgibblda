@@ -109,6 +109,12 @@ public class Model {
   }
 
   public Model(LDACmdOption option, Model trnModel) throws FileNotFoundException, IOException {
+    this(option, null,null,trnModel);
+  }
+
+  public Model(LDACmdOption option,String dDir,String mDir,Model trnModel) throws IOException {
+
+
     modelName = option.modelName;
     K = option.K;
 
@@ -126,11 +132,16 @@ public class Model {
     dir = option.dir;
     if (dir.endsWith(File.separator))
       dir = dir.substring(0, dir.length() - 1);
-
-    this.modelDir=option.modelDir;
+    if(mDir!=null)
+      modelDir=mDir;
+    else
+      modelDir=option.modelDir;
     if (modelDir.endsWith(File.separator))
       modelDir = modelDir.substring(0, modelDir.length() - 1);
-    this.docDir=option.docDir;
+    if(dDir!=null)
+      docDir=dDir;
+    else
+      docDir=option.docDir;
     if (docDir.endsWith(File.separator))
       docDir = docDir.substring(0, docDir.length() - 1);
     dfile = option.dfile;
@@ -157,6 +168,11 @@ public class Model {
     File modelPath=new File(modelDir);
     if(!modelPath.exists())
       modelPath.mkdirs();
+
+  }
+
+  public Model(LDACmdOption option,String dDir,String mDir) throws IOException {
+    this(option,dDir,mDir,null);
   }
 
 
