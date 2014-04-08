@@ -4,7 +4,5 @@ endTime=$2
 baseDir=`dirname $0`/..
 echo "sh $baseDir/../Url_Count/bin/getDocs.sh $startTime $endTime"
 sh $baseDir/../Url_Count/bin/getDocs.sh $startTime $endTime
-echo "sh $baseDir/../jgibblda/bin/inf.sh -dfile labeledDocs/${startTime:0:8}"
-sh $baseDir/../jgibblda/bin/inf.sh -dfile labeledDocs/${startTime:0:8}
-echo "sh $baseDir/../jgibblda/bin/etl.sh labeledDocs.${startTime:0:8}.gz"
-sh $baseDir/../jgibblda/bin/etl.sh labeledDocs.${startTime:0:8}_inf_elex.theta.gz
+echo "sh $baseDir/../jgibblda/bin/inf.sh -dfile ${startTime:0:8}"
+sh $baseDir/../jgibblda/bin/inf.sh -dfile ${startTime:0:8}
