@@ -68,6 +68,7 @@ public class Estimator implements Runnable
 
   public void estimate()
   {
+    long t1=System.currentTimeMillis();
     logger.info("estimate "+trnModel.getModelDir()+" "+trnModel.getDfile()+" start");
     logger.info("Sampling " + trnModel.getNiters() + " iterations!");
     logger.info("Iteration");
@@ -97,6 +98,8 @@ public class Estimator implements Runnable
     logger.info("\nSaving the final model!");
     trnModel.saveModel();
     logger.info("estimate "+trnModel.getModelDir()+ "completely");
+    long t2=System.currentTimeMillis();
+    System.out.println("esttimate  use "+(t2-t1)+" ms");
   }
 
   /**

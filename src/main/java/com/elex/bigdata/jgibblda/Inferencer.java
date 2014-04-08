@@ -74,13 +74,12 @@ public class Inferencer implements Runnable
     newModel.getData().mergeTrainedDocuments(trnModel.getData(), false);
     newModel.init(true,false);
     newModel.initInf();
+    long t1=System.currentTimeMillis();
     logger.info("inference "+newModel.getModelDir()+newModel.getDfile()+" start");
     logger.info("Sampling " + newModel.getNiters() + " iterations for inference!");
     logger.info("Iteration");
     int liter=1;
     for (liter = 1; liter <= newModel.getNiters(); liter++){
-
-
       // for all newz_i
       for (int m = 0; m < newModel.getM(); ++m){
         for (int n = 0; n < newModel.getData().getDocs().get(m).getLength(); n++){
@@ -97,16 +96,9 @@ public class Inferencer implements Runnable
         newModel.updateParams(trnModel);
       }
 
-      //System.out.print("\b\b\b\b\b\b");
     }// end iterations
     newModel.setLiter(liter-1);
 
-//        System.out.println("\nSaving the inference outputs!");
-//        String outputPrefix = newModel.getDfile();
-//        if (outputPrefix.endsWith(".gz")) {
-//            outputPrefix = outputPrefix.substring(0, outputPrefix.length() - 3);
-//        }
-//        newModel.saveModel(outputPrefix + ".");
     logger.info("\nSaving the inference outputs!");
     String modelPrefix=newModel.getDfile().replace('/','.')+"_inf_";
     String tassignSuffix=".tassign.gz";
@@ -118,15 +110,8 @@ public class Inferencer implements Runnable
     resultEtl.putToRedis();
     logger.info("result Etl completed");
     logger.info("inference "+newModel.getModelDir()+ "completely");
-      /*
-    for(int i=0;i<newModel.getM();i++){
-      System.out.print(newModel.getData().getUid(i)+"\t");
-      for(int j=0;j<newModel.getK();j++){
-        System.out.print(result[i][j]+" ");
-      }
-      System.out.print("\n\r");
-    }
-    */
+    long t2=System.currentTimeMillis();
+    System.out.println("inference using "+(t2-t1)+" ms");
     return newModel;
 
   }

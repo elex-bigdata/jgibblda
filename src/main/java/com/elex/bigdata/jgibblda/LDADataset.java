@@ -201,6 +201,7 @@ public class LDADataset {
    */
   public boolean readDataSet(String filename, boolean unlabeled) throws FileNotFoundException, IOException {
     BufferedReader reader = null;
+    long t1=System.currentTimeMillis();
     if (filename.endsWith(".gz"))
       reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filename)), "UTF-8"));
     else
@@ -216,7 +217,8 @@ public class LDADataset {
       System.out.println("Dataset loaded:");
       System.out.println("\tM:" + M);
       System.out.println("\tV:" + V);
-
+      long t2=System.currentTimeMillis();
+      System.out.println("dataset load cost "+(t2-t1)+" ms");
       return true;
     } finally {
       reader.close();
