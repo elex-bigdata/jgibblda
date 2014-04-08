@@ -711,6 +711,7 @@ public class Model {
    */
   protected boolean readTAssignFile(String tassignFile) {
     try {
+      long t1=System.currentTimeMillis();
       int i, j;
       BufferedReader reader = new BufferedReader(new InputStreamReader(
         new GZIPInputStream(
@@ -787,6 +788,8 @@ public class Model {
       }//end for each doc
 
       reader.close();
+      long t2=System.currentTimeMillis();
+      System.out.println("read tassing file use "+(t2-t1)+" ms");
     } catch (Exception e) {
       System.out.println("Error while loading model: " + e.getMessage());
       e.printStackTrace();
