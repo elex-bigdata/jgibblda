@@ -113,6 +113,7 @@ public class Inferencer implements Runnable
     logger.info("result Etl start");
     ResultEtl resultEtl=new ResultEtl();
     resultEtl.loadResult(resultFile);
+    resultEtl.putToRedis();
     logger.info("result Etl completed");
     logger.info("inference "+newModel.getModelDir()+ "completely");
       /*

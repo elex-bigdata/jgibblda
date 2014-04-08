@@ -3,7 +3,9 @@ package com.elex.bigdata.jgibblda;
 import com.elex.bigdata.hashing.BDMD5;
 import com.elex.bigdata.hashing.HashingException;
 import com.elex.bigdata.ro.BasicRedisShardedPoolManager;
+import com.elex.bigdata.util.MetricMapping;
 import org.apache.log4j.Logger;
+import org.kohsuke.args4j.CmdLineParser;
 import redis.clients.jedis.ShardedJedis;
 
 import java.io.*;
@@ -26,12 +28,27 @@ public class ResultEtl {
   private static Logger logger = Logger.getLogger(ResultEtl.class);
 
   public static void main(String[] args) throws IOException, HashingException {
-    String fileName = "/data/log/user_category/llda/" + args[0];
-    logger.info("load result from " + fileName);
-    ResultEtl resultEtl = new ResultEtl();
-    resultEtl.loadResult(fileName);
-    logger.info("load Result completely. " + " users " + resultEtl.uidCategories.size());
-    resultEtl.putToRedis();
+    LDACmdOption option = new LDACmdOption();
+    CmdLineParser parser = new CmdLineParser(option);
+    String baseDir=option.modelDir;
+    String dfile=option.dfile;
+    List<String> projects = new ArrayList<String>();
+    if (option.project.equals("")) {
+      //todo
+      //get all projects to add to projects list
+      for (String project : MetricMapping.getInstance().getAllProjectShortNameMapping().keySet())
+        projects.add(project);
+    } else {
+      projects.add(option.project);
+    }
+    for (String project : projects) {
+      String fileName = baseDir+File.separator+project+File.separator + dfile;
+      logger.info("load result from " + fileName);
+      ResultEtl resultEtl = new ResultEtl();
+      resultEtl.loadResult(fileName);
+      logger.info("load Result completely. " + " users " + resultEtl.uidCategories.size());
+      resultEtl.putToRedis();
+    }
   }
 
   public void loadResult(String tthetafile) throws IOException, HashingException {
@@ -78,7 +95,7 @@ public class ResultEtl {
     }
   }
 
-  private void putToRedis() {
+  public void putToRedis() {
     ShardedJedis shardedJedis = null;
     boolean successful = true;
     try {
