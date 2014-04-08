@@ -74,12 +74,12 @@ public class Inferencer implements Runnable
     newModel.getData().mergeTrainedDocuments(trnModel.getData(), false);
     newModel.init(true,false);
     newModel.initInf();
-    logger.info("inference "+newModel.getModelDir()+" start");
+    logger.info("inference "+newModel.getModelDir()+newModel.getDfile()+" start");
     logger.info("Sampling " + newModel.getNiters() + " iterations for inference!");
     logger.info("Iteration");
     int liter=1;
     for (liter = 1; liter <= newModel.getNiters(); liter++){
-      logger.info(liter);
+
 
       // for all newz_i
       for (int m = 0; m < newModel.getM(); ++m){
@@ -92,6 +92,8 @@ public class Inferencer implements Runnable
 
       if ((liter == newModel.getNiters()) ||
         (liter > newModel.getNburnin() && liter % newModel.getSamplingLag() == 0)) {
+        if(liter%50==0)
+          logger.info(liter);
         newModel.updateParams(trnModel);
       }
 

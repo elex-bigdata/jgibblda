@@ -68,7 +68,7 @@ public class Estimator implements Runnable
 
   public void estimate()
   {
-    logger.info("estimate "+trnModel.getModelDir()+" start");
+    logger.info("estimate "+trnModel.getModelDir()+" "+trnModel.getDfile()+" start");
     logger.info("Sampling " + trnModel.getNiters() + " iterations!");
     logger.info("Iteration");
     int liter =trnModel.getLiter();
@@ -85,7 +85,8 @@ public class Estimator implements Runnable
 
       if ((liter == startIter - 1 + trnModel.getNiters()) ||
         (liter > trnModel.getNburnin() && liter % trnModel.getSamplingLag() == 0)) {
-        logger.info(liter);
+        if(liter%50==0)
+          logger.info(liter);
         trnModel.updateParams();
       }
 
