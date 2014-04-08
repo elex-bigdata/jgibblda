@@ -5,6 +5,7 @@ import com.elex.bigdata.hashing.HashingException;
 import com.elex.bigdata.ro.BasicRedisShardedPoolManager;
 import com.elex.bigdata.util.MetricMapping;
 import org.apache.log4j.Logger;
+import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import redis.clients.jedis.ShardedJedis;
 
@@ -30,6 +31,11 @@ public class ResultEtl {
   public static void main(String[] args) throws IOException, HashingException {
     LDACmdOption option = new LDACmdOption();
     CmdLineParser parser = new CmdLineParser(option);
+    try {
+      parser.parseArgument(args);
+    } catch (CmdLineException e) {
+      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    }
     String baseDir=option.modelDir;
     String dfile=option.dfile;
     List<String> projects = new ArrayList<String>();
