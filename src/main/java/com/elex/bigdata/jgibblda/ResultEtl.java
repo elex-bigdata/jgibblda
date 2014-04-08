@@ -42,12 +42,17 @@ public class ResultEtl {
       projects.add(option.project);
     }
     for (String project : projects) {
+      try{
       String fileName = baseDir+File.separator+project+File.separator + dfile;
       logger.info("load result from " + fileName);
       ResultEtl resultEtl = new ResultEtl();
       resultEtl.loadResult(fileName);
       logger.info("load Result completely. " + " users " + resultEtl.uidCategories.size());
       resultEtl.putToRedis();
+      }catch (FileNotFoundException e){
+        e.printStackTrace();
+        continue;
+      }
     }
   }
 
