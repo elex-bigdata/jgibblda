@@ -68,14 +68,19 @@ public class LDA {
         projects.add(option.project);
       }
       for (String project : projects) {
-        modelDir = option.modelDir + (option.modelDir.endsWith(File.separator) ? "" : File.separator) + project;
-        docDir = option.docDir + (option.docDir.endsWith(File.separator) ? "" : File.separator) + project;
-        if (option.est || option.estc) {
-          Estimator estimator = new Estimator(option, docDir, modelDir);
-          service.execute(estimator);
-        } else if (option.inf) {
-          Inferencer inferencer = new Inferencer(option, docDir, modelDir);
-          service.execute(inferencer);
+        try {
+          modelDir = option.modelDir + (option.modelDir.endsWith(File.separator) ? "" : File.separator) + project;
+          docDir = option.docDir + (option.docDir.endsWith(File.separator) ? "" : File.separator) + project;
+          if (option.est || option.estc) {
+            Estimator estimator = new Estimator(option, docDir, modelDir);
+            service.execute(estimator);
+          } else if (option.inf) {
+            Inferencer inferencer = new Inferencer(option, docDir, modelDir);
+            service.execute(inferencer);
+          }
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+          continue;
         }
       }
 
@@ -85,9 +90,6 @@ public class LDA {
     } catch (CmdLineException cle) {
       System.out.println("Command line error: " + cle.getMessage());
       showHelp(parser);
-      return;
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
       return;
     } catch (Exception e) {
       System.out.println("Error in main: " + e.getMessage());
