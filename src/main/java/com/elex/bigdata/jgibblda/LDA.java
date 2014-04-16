@@ -48,7 +48,7 @@ public class LDA {
   public static void main(String args[]) {
     LDACmdOption option = new LDACmdOption();
     CmdLineParser parser = new CmdLineParser(option);
-    ExecutorService service = new ThreadPoolExecutor(3, 20, 3600, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(30));
+    ExecutorService service = new ThreadPoolExecutor(3, 8, 3600, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
     try {
       if (args.length == 0) {
         showHelp(parser);

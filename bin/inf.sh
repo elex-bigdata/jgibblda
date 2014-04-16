@@ -6,7 +6,7 @@ JAR=$baseDir/target/jgibblda-jar-with-dependencies.jar
 MAIN=com.elex.bigdata.jgibblda.LDA
 logFile=/data/user_category/llda/logs/inf.log
 date=`date`
-echo "${date} java -cp $JAR $MAIN -inf -modelDir /data/user_category/llda/models -docDir /data/user_category/llda/docs -ntopics 3 -model elex  $args >> $logFile 2>&1"
-echo "${date} java -cp $JAR $MAIN -inf -modelDir /data/user_category/llda/models -docDir /data/user_category/llda/docs -ntopics 3 -model elex  $args >> $logFile 2>&1" >> $logFile
-java -cp $JAR $MAIN -inf -modelDir /data/user_category/llda/models -docDir /data/user_category/llda/docs -ntopics 3 -model elex  $args >> $logFile 2>&1
+echo "${date} java -cp $JAR $MAIN -inf -modelDir /data/user_category/llda/models -docDir /data/user_category/llda/docs -ntopics 6 -model elex  $args >> $logFile 2>&1"
+echo "${date} java -cp $JAR $MAIN -inf -modelDir /data/user_category/llda/models -docDir /data/user_category/llda/docs -ntopics 6 -model elex  $args >> $logFile 2>&1" >> $logFile
+java -cp $JAR $MAIN -inf -modelDir /data/user_category/llda/models -docDir /data/user_category/llda/docs -ntopics 6 -model elex  $args >> $logFile 2>&1
 echo "end time `date`" >> $logFile
