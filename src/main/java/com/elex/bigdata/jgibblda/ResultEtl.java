@@ -102,7 +102,7 @@ public class ResultEtl {
       probBuilder.append(Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
       String uidMd5= BDMD5.getInstance().toMD5(uid);
       uidCategories.put(uidMd5, probBuilder.toString());
-      logger.debug(uid + "\t" + probBuilder.toString());
+      logger.info(uid + "\t" + probBuilder.toString());
     }
   }
 
