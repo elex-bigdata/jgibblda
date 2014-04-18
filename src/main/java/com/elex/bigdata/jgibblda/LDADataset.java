@@ -183,10 +183,10 @@ public class LDADataset {
     if(ids.size()==0)
       return;
     Document doc = new Document(ids, cfs, str, labels);
-    setDoc(doc, docs.size());
-    //put uid and Doc into map
     uidDocNums.put(uid, docs.size());
     docNumUids.put(docs.size(), uid);
+    setDoc(doc, docs.size());
+    //put uid and Doc into map
     V = localDict.getWord2id().size();
   }
 
