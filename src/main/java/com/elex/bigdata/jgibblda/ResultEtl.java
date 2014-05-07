@@ -72,7 +72,7 @@ public class ResultEtl {
     Date date=new Date();
     int minutes=date.getMinutes()+date.getHours()*60;
     int index=minutes/5;
-    String resultFilePath=resultRootPath+File.separator+date.getDate()+"."+index;
+    String resultFilePath=resultRootPath+File.separator+index;
     File resultFile=new File(resultFilePath);
     //if resultFile exists and last modified earlier than 1 day ago.
     if(resultFile.exists()&&(resultFile.lastModified()<System.currentTimeMillis()-24*60*60*1000))
