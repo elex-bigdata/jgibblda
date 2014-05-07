@@ -16,6 +16,9 @@ public class LDACmdOption {
   @Option(name="-infseparately", usage="Do inference for each document separately")
   public boolean infSeparately = false;
 
+  @Option(name="-resultDir",usage="specify result directory")
+  public String resultDir = "";
+
   @Option(name="-unlabeled", usage="Ignore document labels")
   public boolean unlabeled = false;
 

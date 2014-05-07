@@ -49,9 +49,7 @@ public class ResultEtl {
       String fileName = baseDir+File.separator+project+File.separator + dfile;
       logger.info("load result from " + fileName);
       ResultEtl resultEtl = new ResultEtl();
-      Date date=new Date();
-      int index=date.getHours()*12+date.getMinutes()/5;
-      resultEtl.loadResult(fileName,index);
+      resultEtl.loadResult(fileName,baseDir+File.separator+project+File.separator+dfile+"."+"result");
       logger.info("load Result completely. " + " users " + resultEtl.uidCategories.size());
       resultEtl.putToRedis();
       }catch (FileNotFoundException e){
@@ -61,25 +59,15 @@ public class ResultEtl {
     }
   }
 
-  public void loadResult(String tthetafile,int index) throws IOException, HashingException {
+  public void loadResult(String tthetafile,String finalResultFile) throws IOException, HashingException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(
       new GZIPInputStream(
         new FileInputStream(tthetafile)), "UTF-8"));
     //todo get resultFile according to date and tthetafile
-    File tthetaFile=new File(tthetafile);
-    //String project=new File(tthetaFile.getParent()).getName();
-    String modelRootPath=new File(tthetaFile.getParent()).getParent();
-    String rootPath=new File(modelRootPath).getParent();
-    String resultRootPath=rootPath+File.separator+"results";
-    String resultFilePath=resultRootPath+File.separator+index;
-    File resultFile=new File(resultFilePath);
     //if resultFile exists and last modified earlier than 1 day ago.
-    if(resultFile.exists()&&(resultFile.lastModified()<System.currentTimeMillis()-24*60*60*1000))
-    {
-      resultFile.delete();
-    }
     //open writer with append mode.
-    BufferedWriter writer=new BufferedWriter(new FileWriter(resultFilePath,true));
+    BufferedWriter writer=new BufferedWriter(new FileWriter(finalResultFile,true));
+    logger.info("write result to "+finalResultFile);
     String line = null;
     logger.info("start to read file "+tthetafile);
     while ((line = reader.readLine()) != null) {

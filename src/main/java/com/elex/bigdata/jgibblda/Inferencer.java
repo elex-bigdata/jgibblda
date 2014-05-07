@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Inferencer implements Runnable
@@ -110,8 +111,11 @@ public class Inferencer implements Runnable
     String resultFile=newModel.getModelDir()+ File.separator + modelPrefix + newModel.getModelName()+thetaSuffix;
     logger.info("result Etl start");
     ResultEtl resultEtl=new ResultEtl();
-    int index=constructDate.getHours()*12+constructDate.getMinutes()/5;
-    resultEtl.loadResult(resultFile,index);
+    SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
+    String suffix=format.format(constructDate)+"."+constructDate.getHours()+"."+constructDate.getMinutes()/5;
+    String finalResultFile=option.resultDir!=""?option.resultDir+File.separator+"result."+suffix:
+      "/data/log/user_category_result/pr"+File.separator+"result."+suffix;
+    resultEtl.loadResult(resultFile,finalResultFile);
     //do not put to redis but write to disk
     //resultEtl.putToRedis();
     logger.info("result Etl completed");
