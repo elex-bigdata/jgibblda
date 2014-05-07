@@ -65,19 +65,22 @@ public class ResultEtl {
         new FileInputStream(tthetafile)), "UTF-8"));
     //todo get resultFile according to date and tthetafile
     File tthetaFile=new File(tthetafile);
-    String project=new File(tthetaFile.getParent()).getName();
+    //String project=new File(tthetaFile.getParent()).getName();
     String modelRootPath=new File(tthetaFile.getParent()).getParent();
     String rootPath=new File(modelRootPath).getParent();
     String resultRootPath=rootPath+File.separator+"results";
-    String resultProjectPath=resultRootPath+File.separator+project;
-    File resultProjectFile=new File(resultProjectPath);
-    if(!resultProjectFile.exists())
-      resultProjectFile.mkdirs();
     Date date=new Date();
     int minutes=date.getMinutes()+date.getHours()*60;
     int index=minutes/5;
-    String resultFilePath=resultProjectPath+File.separator+date.getDate()+"."+index;
-    BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(resultFilePath)));
+    String resultFilePath=resultRootPath+File.separator+date.getDate()+"."+index;
+    File resultFile=new File(resultFilePath);
+    //if resultFile exists and last modified earlier than 1 day ago.
+    if(resultFile.exists()&&(resultFile.lastModified()<System.currentTimeMillis()-24*60*60*1000))
+    {
+      resultFile.delete();
+    }
+    //open writer with append mode.
+    BufferedWriter writer=new BufferedWriter(new FileWriter(resultFilePath,true));
     String line = null;
     logger.info("start to read file "+tthetafile);
     while ((line = reader.readLine()) != null) {
@@ -116,7 +119,7 @@ public class ResultEtl {
       String uidMd5= BDMD5.getInstance().toMD5(uid);
       String probStr=probBuilder.toString();
       uidCategories.put(uidMd5, probStr);
-      logger.info(uid + "\t" + probStr);
+      //logger.info(uid + "\t" + probStr);
       writer.write(uid+"\t"+ probStr);
       writer.newLine();
     }
