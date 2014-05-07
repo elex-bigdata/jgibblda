@@ -107,7 +107,8 @@ public class Inferencer implements Runnable
     logger.info("result Etl start");
     ResultEtl resultEtl=new ResultEtl();
     resultEtl.loadResult(resultFile);
-    resultEtl.putToRedis();
+    //do not put to redis but write to disk
+    //resultEtl.putToRedis();
     logger.info("result Etl completed");
     logger.info("inference "+newModel.getModelDir()+ "completely");
     long t2=System.currentTimeMillis();
