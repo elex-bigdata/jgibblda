@@ -79,6 +79,7 @@ public class ResultEtl {
     String resultFilePath=resultProjectPath+File.separator+date.getDate()+"."+index;
     BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(resultFilePath)));
     String line = null;
+    logger.info("start to read file "+tthetafile);
     while ((line = reader.readLine()) != null) {
       List<Integer> probabilities = new ArrayList<Integer>();
       String[] uidThetas = line.split("\t");
@@ -113,11 +114,13 @@ public class ResultEtl {
         probBuilder.append("0");
       probBuilder.append(Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
       String uidMd5= BDMD5.getInstance().toMD5(uid);
-      uidCategories.put(uidMd5, probBuilder.toString());
-      logger.info(uid + "\t" + probBuilder.toString());
-      writer.write(uid+"\t"+ probBuilder.toString());
+      String probStr=probBuilder.toString();
+      uidCategories.put(uidMd5, probStr);
+      logger.info(uid + "\t" + probStr);
+      writer.write(uid+"\t"+ probStr);
       writer.newLine();
     }
+    logger.info("read file "+tthetafile +" completely");
     writer.flush();
     writer.close();
     reader.close();
@@ -128,6 +131,7 @@ public class ResultEtl {
     boolean successful = true;
     try {
       shardedJedis = manager.borrowShardedJedis();
+      logger.info("put to redis "+uidCategories.size()+" entries");
 
       for (Map.Entry<String, String> entry : uidCategories.entrySet()) {
         shardedJedis.set(entry.getKey(), entry.getValue());

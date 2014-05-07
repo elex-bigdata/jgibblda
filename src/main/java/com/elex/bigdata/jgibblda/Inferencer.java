@@ -101,9 +101,9 @@ public class Inferencer implements Runnable
 
     logger.info("\nSaving the inference outputs!");
     String modelPrefix=newModel.getDfile().replace('/','.')+"_inf_";
-    String tassignSuffix=".tassign.gz";
+    String thetaSuffix=".theta.gz";
     newModel.saveModel(modelPrefix);
-    String resultFile=newModel.getModelDir()+ File.separator + modelPrefix + newModel.getModelName()+tassignSuffix;
+    String resultFile=newModel.getModelDir()+ File.separator + modelPrefix + newModel.getModelName()+thetaSuffix;
     logger.info("result Etl start");
     ResultEtl resultEtl=new ResultEtl();
     resultEtl.loadResult(resultFile);
