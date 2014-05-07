@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 
 public class Inferencer implements Runnable
 {
@@ -44,6 +45,7 @@ public class Inferencer implements Runnable
   private LDACmdOption option;
 
   private Model newModel;
+  private Date constructDate;
 
   //-----------------------------------------------------
   // Init method
@@ -56,6 +58,7 @@ public class Inferencer implements Runnable
     trnModel.init(false,false);
 
     globalDict = trnModel.getData().getLocalDict();
+    constructDate=new Date();
   }
 
   public Inferencer(LDACmdOption option,String docDir,String modelDir) throws IOException {
@@ -65,6 +68,7 @@ public class Inferencer implements Runnable
     trnModel.init(false,false);
 
     globalDict = trnModel.getData().getLocalDict();
+    constructDate=new Date();
   }
 
   //inference new model ~ getting data from a specified dataset
@@ -106,7 +110,8 @@ public class Inferencer implements Runnable
     String resultFile=newModel.getModelDir()+ File.separator + modelPrefix + newModel.getModelName()+thetaSuffix;
     logger.info("result Etl start");
     ResultEtl resultEtl=new ResultEtl();
-    resultEtl.loadResult(resultFile);
+    int index=constructDate.getHours()*12+constructDate.getMinutes()/5;
+    resultEtl.loadResult(resultFile,index);
     //do not put to redis but write to disk
     //resultEtl.putToRedis();
     logger.info("result Etl completed");

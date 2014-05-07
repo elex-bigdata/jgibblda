@@ -49,7 +49,9 @@ public class ResultEtl {
       String fileName = baseDir+File.separator+project+File.separator + dfile;
       logger.info("load result from " + fileName);
       ResultEtl resultEtl = new ResultEtl();
-      resultEtl.loadResult(fileName);
+      Date date=new Date();
+      int index=date.getHours()*12+date.getMinutes()/5;
+      resultEtl.loadResult(fileName,index);
       logger.info("load Result completely. " + " users " + resultEtl.uidCategories.size());
       resultEtl.putToRedis();
       }catch (FileNotFoundException e){
@@ -59,7 +61,7 @@ public class ResultEtl {
     }
   }
 
-  public void loadResult(String tthetafile) throws IOException, HashingException {
+  public void loadResult(String tthetafile,int index) throws IOException, HashingException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(
       new GZIPInputStream(
         new FileInputStream(tthetafile)), "UTF-8"));
@@ -69,9 +71,6 @@ public class ResultEtl {
     String modelRootPath=new File(tthetaFile.getParent()).getParent();
     String rootPath=new File(modelRootPath).getParent();
     String resultRootPath=rootPath+File.separator+"results";
-    Date date=new Date();
-    int minutes=date.getMinutes()+date.getHours()*60;
-    int index=minutes/5;
     String resultFilePath=resultRootPath+File.separator+index;
     File resultFile=new File(resultFilePath);
     //if resultFile exists and last modified earlier than 1 day ago.
