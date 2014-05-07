@@ -91,15 +91,17 @@ public class ResultEtl {
         probabilities.add((int)(bProb*100));
       }
       StringBuilder probBuilder = new StringBuilder();
-      probBuilder.append("a");
+      probBuilder.append("a=");
       if (probabilities.get(0) < 16)
         probBuilder.append("0");
       probBuilder.append(Integer.toHexString(probabilities.get(0)));
-      probBuilder.append("b");
+      probBuilder.append(";");
+      probBuilder.append("b=");
       if (probabilities.get(1) < 16)
         probBuilder.append("0");
       probBuilder.append(Integer.toHexString(probabilities.get(1)));
-      probBuilder.append("z");
+      probBuilder.append(";");
+      probBuilder.append("z=");
       if (100 - probabilities.get(0) - probabilities.get(1) < 16)
         probBuilder.append("0");
       probBuilder.append(Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
