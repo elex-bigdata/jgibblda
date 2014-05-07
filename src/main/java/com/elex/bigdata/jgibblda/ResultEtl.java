@@ -10,10 +10,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import redis.clients.jedis.ShardedJedis;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -66,6 +63,21 @@ public class ResultEtl {
     BufferedReader reader = new BufferedReader(new InputStreamReader(
       new GZIPInputStream(
         new FileInputStream(tthetafile)), "UTF-8"));
+    //todo get resultFile according to date and tthetafile
+    File tthetaFile=new File(tthetafile);
+    String project=new File(tthetaFile.getParent()).getName();
+    String modelRootPath=new File(tthetaFile.getParent()).getParent();
+    String rootPath=new File(modelRootPath).getParent();
+    String resultRootPath=rootPath+File.separator+"results";
+    String resultProjectPath=resultRootPath+File.separator+project;
+    File resultProjectFile=new File(resultProjectPath);
+    if(!resultProjectFile.exists())
+      resultProjectFile.mkdirs();
+    Date date=new Date();
+    int minutes=date.getMinutes()+date.getHours()*60;
+    int index=minutes/5;
+    String resultFilePath=resultProjectPath+File.separator+date.getDate()+"."+index;
+    BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(resultFilePath)));
     String line = null;
     while ((line = reader.readLine()) != null) {
       List<Integer> probabilities = new ArrayList<Integer>();
@@ -103,7 +115,12 @@ public class ResultEtl {
       String uidMd5= BDMD5.getInstance().toMD5(uid);
       uidCategories.put(uidMd5, probBuilder.toString());
       logger.info(uid + "\t" + probBuilder.toString());
+      writer.write(uid+"\t"+ probBuilder.toString());
+      writer.newLine();
     }
+    writer.flush();
+    writer.close();
+    reader.close();
   }
 
   public void putToRedis() {
