@@ -105,9 +105,9 @@ public class ResultEtl {
       if (100 - probabilities.get(0) - probabilities.get(1) < 16)
         probBuilder.append("0");
       probBuilder.append(Integer.toHexString(100 - probabilities.get(0) - probabilities.get(1)));
-      String uidMd5= BDMD5.getInstance().toMD5(uid);
+      //String uidMd5= BDMD5.getInstance().toMD5(uid);
       String probStr=probBuilder.toString();
-      uidCategories.put(uidMd5, probStr);
+      //uidCategories.put(uidMd5, probStr);
       //logger.info(uid + "\t" + probStr);
       writer.write(uid+"\t"+ probStr);
       writer.newLine();
