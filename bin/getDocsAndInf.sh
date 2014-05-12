@@ -4,5 +4,5 @@ endTime=$2
 baseDir=`dirname $0`/..
 echo "sh $baseDir/../Url_Count/bin/getDocs.sh $startTime $endTime"
 sh $baseDir/../Url_Count/bin/getDocs.sh $startTime $endTime
-echo "sh $baseDir/../jgibblda/bin/inf.sh -dfile ${startTime:0:8}"
-sh $baseDir/../jgibblda/bin/inf.sh -dfile ${startTime:0:8}
+echo "sh $baseDir/../jgibblda/bin/inf.sh -dfile ${startTime:0:8} -niters 800 -nburnin 400"
+sh $baseDir/../jgibblda/bin/inf.sh -dfile ${startTime:0:8} -niters 800 -nburnin 400

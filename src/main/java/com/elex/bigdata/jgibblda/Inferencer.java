@@ -108,6 +108,7 @@ public class Inferencer implements Runnable
     String modelPrefix=newModel.getDfile().replace('/','.')+"_inf_";
     String thetaSuffix=".theta.gz";
     newModel.saveModel(modelPrefix);
+    logger.info("save modle finished");
     String resultFile=newModel.getModelDir()+ File.separator + modelPrefix + newModel.getModelName()+thetaSuffix;
     logger.info("result Etl start");
     ResultEtl resultEtl=new ResultEtl();
